@@ -11,7 +11,7 @@ This is a React-based Ecommerce Store application designed to offer a seamless s
 
 ## Welcome to my Ecommerce Store!
 <img width="1396" alt="Screenshot 2024-07-31 at 1 01 20 PM" src="https://github.com/user-attachments/assets/3c41afc9-b354-4098-a70d-734a90fa0ce4">
----
+
 <img width="1424" alt="Screenshot 2024-07-30 at 11 49 52 AM" src="https://github.com/user-attachments/assets/512c7b06-856f-4c58-8374-ead6de4c61a0">
 
 
