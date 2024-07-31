@@ -1,56 +1,12 @@
-// import React, { useState, useEffect} from 'react'
-// import { commerce } from './lib/commerce';
-
-// import { Navbar, Products } from './components';
-
-
-// const App = () => {
-//   const [products, setProducts] = useState([]);
-//   const [cart, setCart] = useState({});
-
-//   const fetchProducts = async () => {
-//     const { data } = await commerce.products.list();
-
-//     setProducts(data);
-//   };
-
-//   const fetchCart = async () => {
-//     setCart(await commerce.cart.retrieve());
-//   };
-
-//   const handleAddToCart = async (productId, quantity) => {
-//     const item = await commerce.cart.add(productId, quantity);
-
-//     setCart(item.cart);
-//   };
-
-//   useEffect(() => {
-//     fetchProducts();
-//     fetchCart();
-//   }, []);
-
-
-//   console.log(cart);
-
-
-//   return (
-//     <div>
-//         <Navbar totalItems={cart.total_items}/>
-//         <Products products={products} onAddToCart={handleAddToCart}/>
-//     </div>
-//   )
-// }
-
-// export default App
-
-
 import React, { useState, useEffect } from 'react';
 import { commerce } from './lib/commerce';
-import { Navbar, Products, Cart} from './components';
+import { Navbar, Products, Cart, Checkout } from './components';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const App = () => {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState({ total_items: 0 }); // Initialize with a default structure
+  const [cart, setCart] = useState(null); // Initialize with null to avoid undefined issues
+  const [loading, setLoading] = useState(true); // Loading state
 
   const fetchProducts = async () => {
     const { data } = await commerce.products.list();
@@ -60,18 +16,27 @@ const App = () => {
   const fetchCart = async () => {
     const cart = await commerce.cart.retrieve();
     setCart(cart);
+    setLoading(false); // Set loading to false after cart is fetched
   };
 
   const handleAddToCart = async (productId, quantity) => {
-    try {
-      console.log('Adding to cart:', productId, quantity);
-      const response = await commerce.cart.add(productId, quantity);
-      console.log('Response from add to cart:', response); // Log response
-      setCart(response); // Update the cart state
-      console.log('Cart after add:', response); // Log updated cart
-    } catch (error) {
-      console.error('Error adding to cart:', error); // Log error
-    }
+    const { cart } = await commerce.cart.add(productId, quantity);
+    setCart(cart); // Update the cart state
+  };
+
+  const handleUpdateCartQty = async (productId, quantity) => {
+    const { cart } = await commerce.cart.update(productId, { quantity });
+    setCart(cart);
+  };
+
+  const handleRemoveFromCart = async (productId) => {
+    const { cart } = await commerce.cart.remove(productId);
+    setCart(cart);
+  };
+
+  const handleEmptyCart = async () => {
+    const { cart } = await commerce.cart.empty();
+    setCart(cart);
   };
 
   useEffect(() => {
@@ -79,19 +44,41 @@ const App = () => {
     fetchCart();
   }, []);
 
-  const totalItems = cart.total_items !== undefined ? cart.total_items : 0;
+  const totalItems = cart ? cart.total_items : 0;
 
-  console.log('Cart:', cart); // Debug log
+  if (loading) return <div>Loading...</div>; // Show loading state
 
   return (
-    <div>
-      <Navbar totalItems={totalItems} />
-      {/* <Products products={products} onAddToCart={handleAddToCart} /> */}
-      <Cart cart={cart}/>
-    </div>
+    <Router>
+      <div>
+        <Navbar totalItems={totalItems} />
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={<Products products={products} onAddToCart={handleAddToCart} />}
+          />
+          <Route
+            exact
+            path="/cart"
+            element={
+              <Cart
+                cart={cart}
+                handleUpdateCartQty={handleUpdateCartQty}
+                handleRemoveFromCart={handleRemoveFromCart}
+                handleEmptyCart={handleEmptyCart}
+              />
+            }
+          />
+          <Route
+            exact
+            path="/checkout"
+            element={<Checkout cart={cart}/>}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
 export default App;
-
-
