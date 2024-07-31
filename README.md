@@ -9,10 +9,11 @@ This is a React-based Ecommerce Store application designed to offer a seamless s
 - **Payment Processing:** Integrated with Stripe, including robust error-handling procedures for improved transaction reliability.
 - **Mobile Responsiveness:** Ensured 100% responsiveness to provide a consistent experience across multiple devices.
 
-Welcome to my Ecommerce Store!
+## Welcome to my Ecommerce Store!
 <img width="1396" alt="Screenshot 2024-07-31 at 1 01 20 PM" src="https://github.com/user-attachments/assets/3c41afc9-b354-4098-a70d-734a90fa0ce4">
+</n>
 <img width="1424" alt="Screenshot 2024-07-30 at 11 49 52 AM" src="https://github.com/user-attachments/assets/512c7b06-856f-4c58-8374-ead6de4c61a0">
-<img width="608" alt="Screenshot 2024-07-31 at 12 55 02 PM" src="https://github.com/user-attachments/assets/0744a513-7302-4d2e-8624-f13f4f31a361">
+
 
 
 
