@@ -7,6 +7,8 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState(null); // Initialize with null to avoid undefined issues
   const [loading, setLoading] = useState(true); // Loading state
+  const [order, setOrder] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fetchProducts = async () => {
     const { data } = await commerce.products.list();
@@ -37,6 +39,24 @@ const App = () => {
   const handleEmptyCart = async () => {
     const { cart } = await commerce.cart.empty();
     setCart(cart);
+  };
+
+  const refreshCart = async () => {
+    const newCart = await commerce.cart.refresh();
+
+    setCart(newCart);
+  };
+
+  const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
+    try {
+      const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
+
+      setOrder(incomingOrder);
+
+      refreshCart();
+    } catch (error) {
+      setErrorMessage(error.data.error.message);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +93,12 @@ const App = () => {
           <Route
             exact
             path="/checkout"
-            element={<Checkout cart={cart}/>}
+            element={<Checkout 
+              cart={cart}
+              order={order}
+              onCaptureCheckout={handleCaptureCheckout} 
+              error={errorMessage}
+              />}
           />
         </Routes>
       </div>
